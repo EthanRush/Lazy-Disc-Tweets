@@ -3,6 +3,7 @@ import config
 import asyncio
 import sys
 import utilDisc
+import twitterMain
 from discord.ext import commands
 
 client = commands.Bot(command_prefix = '!')
