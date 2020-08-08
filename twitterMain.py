@@ -3,7 +3,7 @@ import mimetypes
 import requests
 from twython import Twython, TwythonError
 
-twitter = Twython(config.twitterAppKey, config.twitterAppSecret, config.twitterOauthToken, config.twitterOauthTokenSecret)
+twitter = Twython(config.twitterApiKey, config.twitterApiSecret, config.twitterAccessToken, config.twitterAccessSecret)
 
 def getId(fileLink, isVideo:bool):
     
