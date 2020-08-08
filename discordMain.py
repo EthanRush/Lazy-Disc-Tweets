@@ -2,6 +2,7 @@ import discord
 import config
 import asyncio
 import sys
+import twitterMain
 
 client = discord.Client()
 
@@ -67,17 +68,20 @@ async def on_message(message):
     if message.author == client.user:
         return 
 
+   
+    
+
     if message.content.startswith('!postTextTweet'):
         await message.channel.send('Please type out the text for the tweet you want to post')
         msg1 = await responseTemplate(isOp, '')
         if msg1:
-            
+            print(msg1.content)
             #TODO twitterBot.updateStatus(msg1.content)
-            await message.channel.send('Tweet posted: https//www.twitter.com/') # TODO .format(twitterBot.getLastTweetId())) 
+            await message.channel.send('Tweet posted: https//www.twitter.com/{0}'.format(twitterMain.postTweet(msg1.content, []))) # TODO .format(twitterBot.getLastTweetId())) 
                  
     if message.content.startswith('!postPhotoTweet'):
         
-        await message.channel.send('Please type out the text for the tweet you want to post')
+        await message.channel.send('Please type out the text status surrounded by quotes (Example: "XXXXX")')
 
         msg1 = await responseTemplate(isOp, 'How many photos will be included in this tweet? (0-4)')
         if msg1:
@@ -106,7 +110,7 @@ async def on_message(message):
 
         msg1 = await responseTemplate(isOp, 'Please send the video as a discord attachment')
         if msg1:
-            #statusText = msg1.content
+            statusText = msg1.content
 
             msg2 = await responseTemplate(videoCheck, 'Video recieved')
             if msg2:
