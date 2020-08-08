@@ -70,15 +70,15 @@ async def on_message(message):
 
    
     
-
+    #For posting tweets with no photos or videos
     if message.content.startswith('!postTextTweet'):
         await message.channel.send('Please type out the text for the tweet you want to post')
+        
         msg1 = await responseTemplate(isOp, '')
         if msg1:
-            print(msg1.content)
-            #TODO twitterBot.updateStatus(msg1.content)
-            await message.channel.send('Tweet posted: https//www.twitter.com/{0}'.format(twitterMain.postTweet(msg1.content, []))) # TODO .format(twitterBot.getLastTweetId())) 
-                 
+            await message.channel.send('Tweet posted: https//www.twitter.com/{0}'.format(twitterMain.postTweet(msg1.content, []))) 
+
+    #For posting tweets with text and photos 
     if message.content.startswith('!postPhotoTweet'):
         
         await message.channel.send('Please type out the text status surrounded by quotes (Example: "XXXXX")')
@@ -86,7 +86,8 @@ async def on_message(message):
         msg1 = await responseTemplate(isOp, 'How many photos will be included in this tweet? (0-4)')
         if msg1:
             
-            #statusText = msg1.content
+            statusText = msg1.content
+
             msg2 = await responseTemplate(picNumCheck, 'Please send photo(s), uploaded as seperate discord attachments')
             if msg2:
                 picsLeft = int(msg2.content)
@@ -94,31 +95,29 @@ async def on_message(message):
                 while picsLeft > 0:
                     msg3 = await responseTemplate(mediaCheck,'{0} pictures left'.format(picsLeft-1))
                     if msg3:
-                        
-                        print(msg3.attachments[0].url) #TO DO FIGURE OUT HOW TO OBTAIN LINK FROM IMAGES (DON'T SHOW UP UNDER MESSAGE.CONTENT)
-                        #TODO pass twitter bot the message.content and return the id with upload_media()
-                        picIds.append('') 
-                        if picsLeft == 1:
-                            # have twitterBot use update_status(status= tempText, media_ids=","".join(picIds))
-                            # NOTE depending on how IDs are returned may need to force them to be strings in the list
 
-                            await message.channel.send('Tweet posted: https//www.twitter.com/') # TODO .format(twitterBot.getLastTweetId())) 
+                        #TODO pass twitter bot the photos and return the id with upload_media()
+                        picIds.append(twitterMain.getId(msg3.attachments[0].url , False))  
                         picsLeft -= 1
-       
+
+                await message.channel.send('Tweet posted: https//www.twitter.com/{0}'.format(twitterMain.postTweet(statusText, picIds)))
+    
+    
     if message.content.startswith('!postVideoTweet'):
         await message.channel.send('Please type out the text for the tweet you want to post')
 
         msg1 = await responseTemplate(isOp, 'Please send the video as a discord attachment')
         if msg1:
             statusText = msg1.content
-
+            picIds = []
             msg2 = await responseTemplate(videoCheck, 'Video recieved')
             if msg2:
-                #  Pass twitterBot the msg2.attachments[0].url and use upload_video() 
+                picIds.append(twitterMain.getId(msg2.attachments[0].url , True))
+                 
                 #  Then use update_status(status= tempText, media_ids=","".join(picIds))
                 # NOTE depending on how IDs are returned may need to force them to be strings 
 
-                await message.channel.send('Tweet posted: https//www.twitter.com/') # TODO .format(twitterBot.getLastTweetId())) 
+                await message.channel.send('Tweet posted: https//www.twitter.com/{0}'.format(twitterMain.postTweet(statusText, picIds))) 
 
     if message.content.startswith('!commitDie'):
         await message.channel.send('If you insist')

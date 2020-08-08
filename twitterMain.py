@@ -1,18 +1,22 @@
 import config
+import mimetypes
+import requests
 from twython import Twython, TwythonError
 
 twitter = Twython(config.twitterAppKey, config.twitterAppSecret, config.twitterOauthToken, config.twitterOauthTokenSecret)
 
+def getId(fileLink, isVideo:bool):
+    
+    name = fileLink.split('/')[-1]
+    with open(name, 'wb') as f:
+        f.write(requests.get(fileLink).content)
 
-async def getTweets():
-    return twitter.get_user_timeline(user_id=twitter)
+    postMedia = open (name, 'rb')
 
-async def getId(fileLink, fileType, isVideo:bool):
-    postMedia = open(fileLink, 'rb')
     if isVideo:
-        return twitter.upload_video(media=postMedia, media_type='video/{0}'.format(fileType))
+        return twitter.upload_video(media=postMedia, media_type=mimetypes.guess_type(fileLink))['media_id_string']
     else:
-        return twitter.upload_media(media=postMedia)
+        return twitter.upload_media(media=postMedia)['media_id_string']
 
 
 def postTweet(statusText:str, mediaIds:list):
