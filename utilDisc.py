@@ -22,8 +22,8 @@ async def isValidAttachment(msg, extList):
     return getExtension(getUrl(msg)).lower() in extList
 
 #checks if the message is from the original message
-async def isOp(msg, message):
-    return msg.author == message.author
+async def isOp(auth, message):
+    return auth == message.author
 
 async def picNumCheck(msg, message):
      return isOp(msg, message) and msg.content.isnumeric() and int(msg.content) <= 4 and int(msg.content) > 0
